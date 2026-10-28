@@ -61,7 +61,7 @@ def main():
     make_zip(source, entries)
 
     sums = DIST / "SHA256SUMS.txt"
-    sums.write_text("".join(f"{digest(p)}  {p.name}\\n" for p in (windows, source)), encoding="utf-8")
+    sums.write_text("".join(f"{digest(p)}  {p.name}\n" for p in (windows, source)), encoding="utf-8")
     print(f"Verified release v{args.version}: {windows.name}, {source.name}")
 
 if __name__ == "__main__":
