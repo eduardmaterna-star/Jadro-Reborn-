@@ -37,7 +37,7 @@ jobs:
           $raw = "${{ inputs.version }}"
           if ("${{ github.event_name }}" -eq "push") { $raw = "${{ github.ref_name }}" }
           $v = $raw -replace '^v',''
-          if ($v -notmatch '^\d+\.\d+\.\d+) { throw "Invalid release version: $raw" }
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid release version: $raw" }
           "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: Check required sources
