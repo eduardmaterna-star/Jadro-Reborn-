@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JÁDRO REBORN — THE DESCENT | Filmový prototyp 00:00–00:12</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020611;color:white}
+#space{position:absolute;inset:0;width:100%;height:100%;display:block}
+#vignette{pointer-events:none;position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.62) 100%)}
+#top{position:absolute;top:22px;left:26px;right:26px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:900;letter-spacing:.18em;font-size:clamp(12px,1.3vw,18px);text-shadow:0 3px 15px #000}
+.small{font-size:11px;letter-spacing:.14em;color:#d5dce7}
+button{font:inherit;border:1px solid #ffffff45;background:#0b1b2ccc;color:white;border-radius:8px;padding:11px 16px;cursor:pointer;backdrop-filter:blur(8px)}
+button:hover,button:focus-visible{background:#20405d;outline:2px solid #ffffff55}
+#center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;text-align:center}
+#title{font-size:clamp(22px,3.6vw,55px);font-weight:800;letter-spacing:.22em;text-shadow:0 3px 28px #000;opacity:0;transform:translateY(20px);transition:opacity 1.2s,transform 1.2s}
+#title.show{opacity:1;transform:translateY(0)}
+#sub{position:absolute;bottom:70px;left:5%;right:5%;text-align:center;font-size:clamp(15px,1.65vw,24px);font-weight:500;text-shadow:0 2px 7px #000,0 0 20px #000}
+#bottom{position:absolute;bottom:20px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+#progress{height:3px;flex:1;background:#ffffff36;border-radius:4px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#5da7ff,#ffe0a5)}
+#start{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at center,#081b2acc,#020611ee);z-index:3}
+#start .panel{text-align:center;padding:30px;max-width:530px}
+#start h1{font-size:clamp(28px,4vw,52px);letter-spacing:.12em;margin:0 0 8px}
+#start p{line-height:1.6;color:#cbd6e2}
+#start button{font-size:18px;font-weight:700;margin-top:15px;padding:14px 26px}
+#skip{min-width:100px}
+#replay{display:none}
+@media(prefers-reduced-motion:reduce){#title{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="space" aria-label="Animace přiblížení k Zemi z vesmíru"></canvas>
+<div id="vignette"></div>
+<header id="top"><div><div class="brand">JÁDRO REBORN</div><div class="small">THE DESCENT — CINEMATIC PROTOTYPE</div></div><button id="skip">Přeskočit · Esc</button></header>
+<div id="center"><div id="title">POD POVRCHEM</div></div>
+<div id="sub" aria-live="polite"></div>
+<div id="bottom"><span class="small" id="time">00:00 / 00:12</span><div id="progress"><div id="bar"></div></div><button id="replay">Přehrát znovu</button></div>
+<div id="start"><div class="panel"><div class="small">JÁDRO REBORN / THE DESCENT</div><h1>PRVNÍ SEKVENCE</h1><p>12 sekund: Země z oběžné dráhy, filmový pohyb kamery, atmosférické světlo a český vypravěč. Ukázka funguje i offline.</p><button id="play">▶ Spustit intro</button><p class="small">Zvuk a český hlas závisí na podpoře prohlížeče. Esc přeskočí animaci.</p></div></div>
+<script>
+'use strict';
+const canvas=document.querySelector('#space'),ctx=canvas.getContext('2d',{alpha:false});
+const $=id=>document.getElementById(id),DURATION=12;
+let w=1280,h=720,dpr=1,started=false,ended=false,startAt=0,raf=0,audioCtx=null,oscillators=[],speech=null;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const ease=t=>t*t*(3-2*t);
+let seed=245712;function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+const stars=Array.from({length:360},()=>({x:random(),y:random(),r:.25+random()*1.8,p:random()*Math.PI*2,depth:.15+random()}));
+let globe=document.createElement('canvas');globe.width=1200;globe.height=600;
+const gc=globe.getContext('2d');
+function buildTexture(){
+ const ocean=gc.createLinearGradient(0,0,0,600);ocean.addColorStop(0,'#0e4361');ocean.addColorStop(.5,'#17577a');ocean.addColorStop(1,'#05263d');gc.fillStyle=ocean;gc.fillRect(0,0,1200,600);
+ // Abstract but coherent continent shapes: this is a preview, not a satellite map.
+ const shapes=[
+ [[85,155],[130,90],[225,85],[295,120],[315,185],[265,225],[248,298],[195,280],[160,228],[120,225]],
+ [[220,290],[280,325],[308,395],[288,488],[250,560],[207,505],[187,420]],
+ [[510,150],[560,95],[640,105],[665,170],[635,230],[575,235],[550,315],[498,268]],
+ [[635,105],[710,65],[810,75],[865,145],[970,130],[1070,185],[1030,250],[950,280],[885,255],[825,305],[740,280],[685,218]],
+ [[740,285],[798,300],[830,365],[807,435],[760,465],[725,398]],
+ [[975,395],[1050,375],[1105,418],[1085,480],[1015,475]],
+ [[1120,80],[1180,100],[1195,165],[1150,200]]
+ ];
+ for(const pts of shapes){
+   gc.beginPath();pts.forEach(([x,y],i)=>i?gc.lineTo(x,y):gc.moveTo(x,y));gc.closePath();
+   gc.fillStyle='#3d7759';gc.fill();gc.strokeStyle='#8b9d6a';gc.lineWidth=3;gc.stroke();
+ }
+ for(let i=0;i<2400;i++){
+   const x=random()*1200,y=random()*600;
+   gc.fillStyle=random()>.5?'#ffffff10':'#091d271b';
+   gc.fillRect(x,y,1+random()*6,1+random()*3);
+ }
+ // Subtle cloud belts
+ for(let i=0;i<150;i++){
+   let x=random()*1200,y=random()*600,r=10+random()*45;
+   gc.fillStyle='rgba(230,244,249,'+(0.018+random()*.055)+')';
+   gc.beginPath();gc.ellipse(x,y,r,r*.18,random()*.6,0,Math.PI*2);gc.fill();
+ }
+}
+buildTexture();
+function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+function drawStars(t){
+ for(const s of stars){
+  const px=((s.x-.5)*(1+t*.11*s.depth)+.5)*w,py=((s.y-.5)*(1+t*.11*s.depth)+.5)*h;
+  const a=.35+.45*(.5+.5*Math.sin(t*.7+s.p));
+  ctx.fillStyle='rgba(221,238,255,'+a+')';ctx.beginPath();ctx.arc(px,py,s.r,0,Math.PI*2);ctx.fill();
+ }
+}
+function drawEarth(t){
+ const u=ease(clamp(t/12,0,1)),radius=Math.max(w,h)*(.20+.28*u);
+ const cx=w*(.65-.15*u),cy=h*(.55+.03*u);
+ const atmosphere=ctx.createRadialGradient(cx,cy,radius*.88,cx,cy,radius*1.25);
+ atmosphere.addColorStop(0,'#4ca4ff00');atmosphere.addColorStop(.45,'#4ca4ff35');atmosphere.addColorStop(1,'#4ca4ff00');
+ ctx.fillStyle=atmosphere;ctx.beginPath();ctx.arc(cx,cy,radius*1.25,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,radius,0,Math.PI*2);ctx.clip();
+ ctx.fillStyle='#0b3049';ctx.fillRect(cx-radius,cy-radius,radius*2,radius*2);
+ // Project longitudinal texture strips to a sphere with approximate equirectangular mapping.
+ const strips=Math.max(110,Math.floor(radius*.75)),stripWidth=2*radius/strips;
+ const rotation=t*.011;
+ for(let i=0;i<strips;i++){
+  const norm=(i+.5)/strips*2-1,lon=Math.asin(clamp(norm,-1,1));
+  const srcX=((lon/Math.PI+.5+rotation)%1+1)%1*globe.width;
+  const dx=cx-radius+i*stripWidth;
+  const yy=radius*Math.sqrt(Math.max(0,1-norm*norm));
+  ctx.drawImage(globe,Math.floor(srcX),0,2,600,dx,cy-yy,stripWidth+1,yy*2);
+ }
+ // Dark night side and daylit highlight.
+ const shade=ctx.createLinearGradient(cx-radius,cy,cx+radius,cy);
+ shade.addColorStop(0,'rgba(1,8,20,.93)');shade.addColorStop(.37,'rgba(2,11,25,.48)');
+ shade.addColorStop(.72,'rgba(0,0,0,.03)');shade.addColorStop(1,'rgba(194,226,255,.14)');
+ ctx.fillStyle=shade;ctx.fillRect(cx-radius,cy-radius,2*radius,2*radius);
+ const glint=ctx.createRadialGradient(cx+radius*.35,cy-radius*.45,0,cx+radius*.35,cy-radius*.45,radius*1.2);
+ glint.addColorStop(0,'#bdeaff18');glint.addColorStop(1,'#bdeaff00');ctx.fillStyle=glint;ctx.fillRect(cx-radius,cy-radius,2*radius,2*radius);
+ ctx.restore();
+ ctx.strokeStyle='#86caff77';ctx.lineWidth=Math.max(1,radius*.009);ctx.beginPath();ctx.arc(cx,cy,radius+2,0,Math.PI*2);ctx.stroke();
+ const sun=ctx.createRadialGradient(w*.94,h*.10,0,w*.94,h*.10,w*.5);
+ sun.addColorStop(0,'#fff3ca30');sun.addColorStop(.3,'#f7c76a0d');sun.addColorStop(1,'#f7c76a00');
+ ctx.fillStyle=sun;ctx.fillRect(0,0,w,h);
+}
+function frame(now){
+ if(!started||ended)return;
+ const t=clamp((now-startAt)/1000,0,DURATION);
+ ctx.fillStyle='#020611';ctx.fillRect(0,0,w,h);
+ const nebula=ctx.createRadialGradient(w*.62,h*.48,0,w*.62,h*.48,w*.6);
+ nebula.addColorStop(0,'#142b4c');nebula.addColorStop(1,'#020611');
+ ctx.fillStyle=nebula;ctx.fillRect(0,0,w,h);
+ drawStars(t);drawEarth(t);
+ $('bar').style.width=(t/DURATION*100)+'%';
+ $('time').textContent='00:'+String(Math.floor(t)).padStart(2,'0')+' / 00:12';
+ $('sub').textContent=t<2?'':t<10.5?'„Po miliony let ukrývala Země tajemství hluboko pod svým povrchem.“':'';
+ $('title').classList.toggle('show',t>8.8);
+ if(t>=DURATION){finish(false);return}
+ raf=requestAnimationFrame(frame);
+}
+function startAudio(){
+ try{
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  const master=audioCtx.createGain();master.gain.value=.045;master.connect(audioCtx.destination);
+  for(const [freq,type,vol] of [[55,'sine',.7],[82.41,'triangle',.25],[110,'sine',.1]]){
+   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+   osc.type=type;osc.frequency.value=freq;gain.gain.value=vol;
+   osc.connect(gain);gain.connect(master);osc.start();oscillators.push(osc);
+  }
+  master.gain.setValueAtTime(.001,audioCtx.currentTime);
+  master.gain.linearRampToValueAtTime(.055,audioCtx.currentTime+3);
+  master.gain.linearRampToValueAtTime(.001,audioCtx.currentTime+12);
+ }catch(e){console.warn('Audio unavailable',e)}
+}
+function startVoice(){
+ try{
+  if(!('speechSynthesis' in window))return;
+  const u=new SpeechSynthesisUtterance('Po miliony let ukrývala Země tajemství hluboko pod svým povrchem.');
+  u.lang='cs-CZ';u.rate=.88;u.pitch=.75;u.volume=.95;
+  const voices=speechSynthesis.getVoices(),cz=voices.find(v=>v.lang.toLowerCase().startsWith('cs'));
+  if(cz)u.voice=cz;speech=u;setTimeout(()=>{if(started&&!ended)speechSynthesis.speak(u)},1500);
+ }catch(e){console.warn('Voice unavailable',e)}
+}
+function start(){
+ cancelAnimationFrame(raf);started=true;ended=false;
+ $('start').style.display='none';$('replay').style.display='none';$('title').classList.remove('show');
+ startAt=performance.now();startAudio();startVoice();raf=requestAnimationFrame(frame);
+}
+function finish(skipped){
+ if(ended)return;
+ ended=true;started=false;cancelAnimationFrame(raf);
+ for(const osc of oscillators){try{osc.stop()}catch(e){}}oscillators=[];
+ if(audioCtx){audioCtx.close().catch(()=>{});audioCtx=null}
+ if('speechSynthesis' in window)speechSynthesis.cancel();
+ $('sub').textContent=skipped?'Intro přeskočeno':'Konec první filmové sekvence';
+ $('replay').style.display='block';$('bar').style.width='100%';
+ // The game integration listens for this event and starts the new expedition.
+ if(window.parent!==window)window.parent.postMessage({type:'jadro:intro-finished',skipped,sequence:'earth-orbit-12s'},window.location.origin==='null'?'*':window.location.origin);
+}
+$('play').addEventListener('click',start);
+$('skip').addEventListener('click',()=>finish(true));
+$('replay').addEventListener('click',start);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();finish(true)}});
+ctx.fillStyle='#020611';ctx.fillRect(0,0,w,h);drawStars(0);drawEarth(0);
+</script>
+</body>
+</html>
