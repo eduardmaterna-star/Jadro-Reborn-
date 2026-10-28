@@ -1,0 +1,20 @@
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const html=fs.readFileSync(__dirname+'/preview-earth-12s.html','utf8');
+const integration=fs.readFileSync(__dirname+'/intro-integration.js','utf8');
+const production=fs.readFileSync(__dirname+'/PRODUCTION.md','utf8');
+const script=html.match(/<script>([\s\S]*?)<\/script>/);
+assert(script,'HTML inline script missing');
+new Function(script[1]); // syntax parse without executing DOM code
+new Function(integration);
+assert(html.includes('DURATION=12'),'First sequence must last 12 seconds');
+assert(html.includes("e.key==='Escape'"),'Escape must skip cinematic');
+assert(html.includes("type:'jadro:intro-finished'"),'Preview must notify parent');
+assert(html.includes("speechSynthesis"),'Czech narration fallback missing');
+assert(html.includes("drawEarth(t)"),'Earth animation missing');
+assert(integration.includes("event.source!==iframe.contentWindow"),'Untrusted message source');
+assert(integration.includes("event.origin!==window.location.origin"),'Untrusted message origin');
+assert(integration.includes('Promise.reject'),'Prevent duplicate cinematics');
+assert(production.includes('00–12')&&production.includes('56–60'),'Storyboard incomplete');
+assert(!/https?:\/\/[^"'\s]+\.js/i.test(html),'Preview should work without remote JS');
+console.log('PASS: cinematic JS syntax, 12s timing, Escape, narration, postMessage origin/source and storyboard');
