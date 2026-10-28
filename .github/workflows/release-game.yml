@@ -1,0 +1,157 @@
+name: JÁDRO REBORN — versioned game release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Verze X.Y.Z (ruční test nevytvoří GitHub Release)'
+        required: true
+        default: '0.3.18'
+
+permissions:
+  contents: write
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: launcher/go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Determine release version
+        id: version
+        shell: pwsh
+        run: |
+          $raw = "${{ inputs.version }}"
+          if ("${{ github.event_name }}" -eq "push") { $raw = "${{ github.ref_name }}" }
+          $v = $raw -replace '^v',''
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid release version: $raw" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Check required sources
+        shell: pwsh
+        run: |
+          foreach ($f in @('launcher/go.mod','launcher/main.go','launcher/web/game.js','scripts/release_version.py')) {
+            if (-not (Test-Path -LiteralPath $f)) { throw "Missing game source: $f" }
+          }
+
+      - name: Verify JavaScript syntax
+        run: node --check launcher/web/game.js
+
+      - name: Install graphics-test dependencies
+        run: python -m pip install Pillow==11.3.0
+
+      - name: Python regression tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Go tests and static analysis
+        working-directory: launcher
+        run: |
+          go test ./...
+          go vet ./...
+
+      - name: Build Windows x64
+        shell: pwsh
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: '0'
+          GAME_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Push-Location launcher
+          go build -trimpath -ldflags="-s -w" -o "../dist/JadroReborn-v$env:GAME_VERSION-Windows-x64.exe" .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Pop-Location
+
+      - name: Build versioned ZIPs and SHA-256
+        run: python scripts/release_version.py --version "${{ steps.version.outputs.version }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JADRO_REBORN_v${{ steps.version.outputs.version }}
+          path: |
+            dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip
+            dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip
+            dist/SHA256SUMS.txt
+
+      - name: Publish GitHub Release on version tags
+        if: github.event_name == 'push'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GAME_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release create $tag "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip" "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip" "dist/SHA256SUMS.txt" --title "JÁDRO REBORN $tag" --generate-notes
+) { throw "Invalid release version: $raw" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Check required sources
+        shell: pwsh
+        run: |
+          foreach ($f in @('launcher/go.mod','launcher/main.go','launcher/web/game.js','scripts/release_version.py')) {
+            if (-not (Test-Path -LiteralPath $f)) { throw "Missing game source: $f" }
+          }
+
+      - name: Verify JavaScript syntax
+        run: node --check launcher/web/game.js
+
+      - name: Install graphics-test dependencies
+        run: python -m pip install Pillow==11.3.0
+
+      - name: Python regression tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Go tests and static analysis
+        working-directory: launcher
+        run: |
+          go test ./...
+          go vet ./...
+
+      - name: Build Windows x64
+        shell: pwsh
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: '0'
+          GAME_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Push-Location launcher
+          go build -trimpath -ldflags="-s -w" -o "../dist/JadroReborn-v$env:GAME_VERSION-Windows-x64.exe" .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Pop-Location
+
+      - name: Build versioned ZIPs and SHA-256
+        run: python scripts/release_version.py --version "${{ steps.version.outputs.version }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JADRO_REBORN_v${{ steps.version.outputs.version }}
+          path: |
+            dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip
+            dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip
+            dist/SHA256SUMS.txt
+
+      - name: Publish GitHub Release on version tags
+        if: github.event_name == 'push'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GAME_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release create $tag "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip" "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip" "dist/SHA256SUMS.txt" --title "JÁDRO REBORN $tag" --generate-notes
