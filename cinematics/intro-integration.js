@@ -36,9 +36,13 @@
       Object.assign(iframe.style,{border:'0',width:'100%',height:'100%',display:'block'});
       overlay.appendChild(iframe);
       let done=false;
+      // Failsafe: never hold a new expedition hostage if iframe playback stalls.
+      const timeout=setTimeout(()=>finish(true),20000);
+      iframe.addEventListener('error',()=>finish(true),{once:true});
       function finish(skipped){
         if(done)return;
         done=true;active=false;
+        clearTimeout(timeout);
         window.removeEventListener('message',onMessage);
         window.removeEventListener('keydown',onKey,true);
         overlay.remove();
