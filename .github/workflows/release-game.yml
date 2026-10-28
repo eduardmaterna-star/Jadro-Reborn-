@@ -47,6 +47,28 @@ jobs:
             if (-not (Test-Path -LiteralPath $f)) { throw "Missing game source: $f" }
           }
 
+      - name: Verify premium game assets
+        shell: pwsh
+        run: |
+          $required = @(
+            'launcher/save_api.go','launcher/web/index.html','launcher/web/style.css',
+            'launcher/web/assets/materials/soil.png','launcher/web/assets/materials/stone.png',
+            'launcher/web/assets/materials/mantle.png','launcher/web/assets/materials/basalt.png',
+            'launcher/web/assets/materials/outer_core.png','launcher/web/assets/materials/inner_core.png',
+            'launcher/web/assets/materials/wood.png',
+            'launcher/web/assets/ores/coal.png','launcher/web/assets/ores/iron.png',
+            'launcher/web/assets/ores/diamond.png','launcher/web/assets/ores/ruby.png',
+            'launcher/web/assets/ores/emerald.png',
+            'launcher/web/audio/ambient.ogg','launcher/web/audio/deep_layer.ogg',
+            'launcher/web/audio/core_layer.ogg','launcher/web/audio/dig.wav',
+            'launcher/web/audio/buy.wav','launcher/web/audio/sell.wav',
+            'launcher/web/audio/ladder.wav','launcher/web/audio/wind.wav'
+          )
+          foreach ($file in $required) {
+            if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing required asset: $file" }
+            if ((Get-Item -LiteralPath $file).Length -eq 0) { throw "Empty required asset: $file" }
+          }
+
       - name: Verify JavaScript syntax
         run: node --check launcher/web/game.js
 
@@ -72,7 +94,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
           Push-Location launcher
-          go build -trimpath -ldflags="-s -w" -o "../dist/JadroReborn-v$env:GAME_VERSION-Windows-x64.exe" .
+          go build -trimpath -ldflags="-s -w -X main.GameVersion=$env:GAME_VERSION" -o "../dist/JadroReborn-v$env:GAME_VERSION-Windows-x64.exe" .
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Pop-Location
 
