@@ -13,3 +13,4 @@ jobs:
         with:
           node-version: '22'
       - run: node cinematics/test-intro.cjs
+      - run: node cinematics/test-intro-failsafe.cjs
