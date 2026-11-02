@@ -39,10 +39,10 @@ Hra je o **kopání směrem k zemskému jádru**. Při změnách zachovat těžb
 
 ### Další otevřená práce
 - [#10](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/10): UI hotfix „PRODEJ“, odstranění horních Obchod/Prodej a titulu. **Lokálně připraveno**, úplné herní soubory a Windows vizuální test v repozitáři dosud nejsou.
-- P2: výkon FPS/RAM/CPU/GPU + skutečný `/api/metrics`, 24 vzorků a testy stale stavu.
-- P2: shadery, viditelnost postavy, vegetace, žebřík, culling a vizuální kontrola.
-- P2: online instalátor, ověřený zdroj Windows ZIP, hash, bezpečný upgrade a dostupnost hostingu.
-- P3: THE DESCENT filmové intro — [PR #2](https://github.com/eduardmaterna-star/Jadro-Reborn-/pull/2) je samostatný 12s prototyp, nikoli integrované hotové 60s video.
+- [#17](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/17) (P2): FPS/RAM/CPU/GPU, skutečné `/api/metrics`, 24 vzorků a testy stale stavu.
+- [#18](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/18) (P2): shadery, viditelnost postavy, vegetace, žebřík, culling a vizuální kontrola.
+- [#19](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/19) (P2): online instalátor, ověřený Windows ZIP, hash, bezpečný upgrade a dostupnost hostingu.
+- [#20](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/20) (P3): THE DESCENT intro; [PR #2](https://github.com/eduardmaterna-star/Jadro-Reborn-/pull/2) je pouze 12s prototyp, nikoli hotové 60s video.
 
 ## Dohodnutý proces pro Coding a Code Review
 
