@@ -2,6 +2,7 @@
 """Package current tagged sources and Windows executable as separate verified ZIPs."""
 import argparse
 import hashlib
+import re
 import subprocess
 import zipfile
 from pathlib import Path
@@ -27,13 +28,20 @@ def make_zip(dest, entries):
         if set(z.namelist()) != {name for _, name in entries}:
             raise RuntimeError("Unexpected ZIP entries")
 
+VERSION_RE = re.compile(r"\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?")
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--version", required=True)
+    versions = parser.add_mutually_exclusive_group(required=True)
+    versions.add_argument("--version")
+    versions.add_argument("--check-version")
     args = parser.parse_args()
-    import re
-    if not re.fullmatch(r"\d+\.\d+\.\d+", args.version):
-        raise ValueError("Release version must be X.Y.Z")
+    version = args.version or args.check_version
+    if not VERSION_RE.fullmatch(version):
+        raise ValueError("Release version must be X.Y.Z or X.Y.Z-(alpha|beta|rc).N")
+    if args.check_version is not None:
+        print(version)
+        return
     DIST.mkdir(exist_ok=True)
     exe = DIST / f"JadroReborn-v{args.version}-Windows-x64.exe"
     if not exe.is_file() or exe.stat().st_size < 1_000_000:
