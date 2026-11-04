@@ -4,9 +4,9 @@ Hra o postupném kopání do hlubin Země s terénem, surovinami, obchodem, fyzi
 
 ## Stav projektu — 2. listopadu 2026
 
-**Poslední zdokumentovaná verze:** `v0.4.0-alpha.4` · **Alpha / vývojová**, **ne Stable**.
+**Nejnovější verze z chatů Coding/Code Review:** `v0.4.0-alpha.6 R1` · **Alpha / vývojová**, **ne Stable**. Na GitHub `main` jsou aktuálně hlavně starší zdroje a dokumentace; úplná nová hra ještě nahraná není.
 
-⚠️ **Repozitář zatím neobsahuje úplný zdrojový strom současné hry, všechna média ani kompletní Windows vydání.** Release dokumentace je na GitHubu, ale funkční distribuční hra z tohoto `main` zatím není ověřena. Viz [Issue #11](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/11) a [aktuální stav vydání](CURRENT_RELEASE.md).
+⚠️ **Repozitář zatím neobsahuje úplný zdrojový strom alpha.6 R1, všechna média ani kompletní Windows vydání.** Release dokumentace je na GitHubu, ale funkční distribuční hra z tohoto `main` zatím není ověřena. Viz [Issue #11](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/11) a [aktuální stav vydání](CURRENT_RELEASE.md).
 
 **Co popisuje poslední verze:** adaptivní hudba, pohyblivé listy, plynulejší počasí a teplota, přenosný generátor, kabely, kýbl, pumpa a počáteční průsaky vody; multiplayer max. 4 hráči je ve vývoji. Nové funkce vody a energie zatím nejsou synchronizované mezi hráči.
 
@@ -15,6 +15,7 @@ Hra o postupném kopání do hlubin Země s terénem, surovinami, obchodem, fyzi
 | Oblast | Odkaz |
 |---|---|
 | Historie Coding + Code Review a úkoly | [DEVELOPMENT_HISTORY.md](DEVELOPMENT_HISTORY.md) |
+| **Novinky 3.–4. 11. 2026 (alpha.5–alpha.6 R1)** | **[UPDATES_2026-11-04.md](UPDATES_2026-11-04.md)** |
 | Stav posledního vydání | [CURRENT_RELEASE.md](CURRENT_RELEASE.md) |
 | Změny alpha.4 | [CHANGELOG_V0400_ALPHA4.md](CHANGELOG_V0400_ALPHA4.md) |
 | Pravidla sestavení / vydávání | [GAME_RELEASES.md](GAME_RELEASES.md) |
@@ -25,6 +26,8 @@ Hra o postupném kopání do hlubin Země s terénem, surovinami, obchodem, fyzi
 ## Priority vývoje
 
 - **P1 — před Stable:** [zdroje a média #11](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/11), [release CI #12](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/12), [Windows QA #13](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/13), [multiplayer synchronizace #14](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/14), [síťové testy #15](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/15), [save a obnova #16](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/16).
+- **Nové P1 z alpha.6 R1:** [multiplayer tokeny / already_online #22](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/22), [nepřehrávané zvuky #23](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/23).
+- **Nové P2 z alpha.6 R1:** [audio engine #24](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/24), [render výkon #25](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/25).
 - **P2 — další ověření a zlepšení:** [výkon a telemetrie #17](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/17), [grafika #18](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/18), [online instalátor #19](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/19).
 - **P3 — budoucí obsah:** [filmové intro #20](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/20).
 - **Původní UI úprava:** [#10](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/10) má lokální opravu, ale zatím ne ověřené kompletní herní soubory na GitHubu.
@@ -37,4 +40,4 @@ Hra o postupném kopání do hlubin Země s terénem, surovinami, obchodem, fyzi
 4. Issue neuzavírat pouze na základě tvrzení „opraveno v chatu“; vyžaduje ověřenou opravu v repozitáři a odpovídající test.
 5. Označení **Stable** až po testech skutečné aplikace na Windows 10/11 a při relevantních změnách i testech multiplayeru.
 
-Tento repozitář obsahuje kód, částečnou dokumentaci a historii vývoje; **nepředstírá kompletní veřejný build alpha.4**.
+Tento repozitář obsahuje kód, částečnou dokumentaci a historii vývoje; **nepředstírá kompletní veřejný build alpha.6 R1**.
