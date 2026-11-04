@@ -1,11 +1,11 @@
 # JÁDRO REBORN — historie vývoje a code review
 
-> Převod dostupných podkladů z chatů **Coding** a **Code Review**, stav zapsaný 2026-11-02. Historické tvrzení „lokální test PASS“ není potvrzením, že aktuální soubor leží v GitHub `main`. Tento přehled **není** novým herním buildem.
+ > Převod dostupných podkladů z chatů **Coding** a **Code Review**, aktualizace 2026-11-04. Historické tvrzení „lokální test PASS“ není potvrzením, že aktuální soubor leží v GitHub `main`. Tento přehled **není** novým herním buildem.
 
 ## Aktuální stav
 
 - Repo: [Jadro-Reborn-](https://github.com/eduardmaterna-star/Jadro-Reborn-).
-- Nejnovější popsaný balíček: **v0.4.0-alpha.4**, status **Alpha**.
+- Nejnovější balíček doložený chaty: **v0.4.0-alpha.6 R1**, status **Alpha** (úplná hra na GitHubu zatím není). Podrobnosti: [UPDATES_2026-11-04.md](UPDATES_2026-11-04.md).
 - [CURRENT_RELEASE.md](CURRENT_RELEASE.md) potvrzuje, že **úplné zdroje, binární assety ani Windows distribuční ZIP nejsou dosud nahrány do `main`**. PR #9 dodal release dokumentaci, nikoliv všechny soubory hry. Dokud nebude hotovo [#11](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/11), není správné považovat GitHub za kompletní zdroj hry.
 - Neověřené: koncové testy Windows 10/11, reálná vícehráčská session přes internet, GPU telemetrie, CI pro aktuální úplnou verzi. **Neoznačovat Stable bez ověření.**
 
@@ -22,6 +22,8 @@
 | v0.4.0-alpha.2 | V Coding popisováno serverem potvrzené kruhové kopání, sdílený terén, pohyb, oddělený inventář/peníze a reconnect. | Lokální testy; chyběla autoritativní fyzika a synchronizace některých technologií. |
 | v0.4.0-alpha.3 | Požadavky na žebřík jen přes Space, trávu, umístění skal, viditelné entity, shadery a výkonový HUD. | Bez úplného aktuálního zdrojového stromu nepotvrzeno, že vše bylo zapracováno. |
 | v0.4.0-alpha.4 | Hlasitější adaptivní hudba, animované listy, pomalejší počasí/plynulejší teplota; přenosný generátor, kabely, kýbl, pumpa a lokální průsaky. Malý online instalátor (nutný hosting kompletního ZIPu). | Podle [CHANGELOG_V0400_ALPHA4.md](CHANGELOG_V0400_ALPHA4.md); nové voda/energie **zatím nejsou synchronizované v multiplayeru**. |
+| v0.4.0-alpha.5–alpha.6 | Stabilizace relací a ukládání, `save_request/save_result`, reconnect a opravy UI při chybné URL. | Dílčí lokální testy PASS; skutečný multiplayer/Windows NOT RUN. |
+| v0.4.0-alpha.6 R1 | Nový lokální Windows balíček rozdělený do šesti částí; SOURCE ZIP podle Code Review 169 položek, 24 assetů. | Audit identifikoval P1 tokeny/online stav a nenapojené SFX; [podrobnosti](UPDATES_2026-11-04.md). |
 
 ## Původní požadavky na hru
 
@@ -43,6 +45,12 @@ Hra je o **kopání směrem k zemskému jádru**. Při změnách zachovat těžb
 - [#18](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/18) (P2): shadery, viditelnost postavy, vegetace, žebřík, culling a vizuální kontrola.
 - [#19](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/19) (P2): online instalátor, ověřený Windows ZIP, hash, bezpečný upgrade a dostupnost hostingu.
 - [#20](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/20) (P3): THE DESCENT intro; [PR #2](https://github.com/eduardmaterna-star/Jadro-Reborn-/pull/2) je pouze 12s prototyp, nikoli hotové 60s video.
+
+### Nová evidence z 4. 11. 2026
+- [#22](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/22): P1 tokeny multiplayerových relací a `already_online`.
+- [#23](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/23): P1 chybějící vazba herních zvuků.
+- [#24](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/24): P2 řízení OGG a oddělené hlasitosti.
+- [#25](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/25): P2 výkon `renderChunk` a textur.
 
 ## Dohodnutý proces pro Coding a Code Review
 
