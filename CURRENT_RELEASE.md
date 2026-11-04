@@ -1,20 +1,32 @@
-# JÁDRO REBORN — v0.4.0-alpha.4
+# JÁDRO REBORN — stav verzí k 4. 11. 2026
 
-**Status: Alpha, not Stable.**
+**Nejnovější verze doložená chaty Coding a Code Review:** `v0.4.0-alpha.6 R1` — **Alpha, ne Stable**.
 
-This branch is a staging area for importing the current game from the verified local source package. **The complete game has NOT been uploaded yet**: the GitHub connector currently cannot transfer the 36 MB local ZIP or its large binary PNG/WAV/OGG assets. Do not run the signing/release workflows from this incomplete branch.
+**Nejnovější release dokumentace dříve dostupná na GitHub main:** `v0.4.0-alpha.4`. Repo dosud **neobsahuje úplnou hru alpha.6 R1, všechny binární assety ani spustitelný Windows balíček**. Tento update je pouze dokumentační — žádný nový herní EXE ani GitHub Release nebyl zveřejněn.
 
-Current changes in the game:
-- Audible adaptive music and animated tree foliage
-- Smoother weather and temperature display
-- Generator, cable power, bucket, powered water pump and deep-mine seepage (single-player only)
-- Multiplayer lobby, shared dig events and multiplayer state from earlier alpha releases
-- Existing single-player saves preserved
+## Co je nového od alpha.4
 
-Original source ZIP SHA-256:
-`2eed9062b2087951eff91c6fb040bfdb51146cdf0fe9bbb594b1e17e76501aee`
+- **Alpha.5:** stabilizace serverových stavů, save/backup, rate-limit, reconnect, sjednocení verzí a vypínání serveru.
+- **Alpha.6:** potvrzování multiplayerového save (`save_request/save_result`, `requestId`), oprava tlačítek po chybné URL, reconnect a `world_ready`.
+- **Alpha.6 R1:** aktualizovaný Windows balíček v šesti částech pro lokální spojení a samostatně analyzovaný source ZIP s 169 položkami, 24 mediálních assetů. Zdrojový ZIP nebyl v tomto chatu dostupný k uploadu.
 
-Existing unsigned Windows ZIP SHA-256:
-`5bcf16ba8ebf604e575df423d6be97f0138bff89f974cd3e00bef719ef910171`
+## Otevřené P1 chyby
 
-**Remaining task:** upload all 109 source-archive entries including binary media to this branch, compare SHA-256, run Windows CI, then merge or release. The game/installer are not digitally signed.
+- [#22](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/22) — obnovovací tokeny expedic a `already_online` při odpojeném WebSocketu.
+- [#23](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/23) — existující SFX `dig/buy/sell/ladder/wind` nejsou spouštěny herním JS.
+- [#11](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/11) — chybějící úplné aktuální zdroje/asset balíček v GitHubu.
+- [#12](https://github.com/eduardmaterna-star/Jadro-Reborn-/issues/12) — neověřená release pipeline; rozpracovaný [PR #21](https://github.com/eduardmaterna-star/Jadro-Reborn-/pull/21).
+
+## Ověření
+
+Dle konverzací lokální kontroly ZIP, 24 mediálních assetů a vybrané automatické testy byly PASS. **Reálné Windows 10/11, 2–4 hráči přes internet, aktualizované GitHub CI a kompletní alfa build z GitHub main jsou NOT RUN / NOT VERIFIED.** Code Review upozornilo na Go sestavení 1.23.2 oproti deklaraci 1.27.3.
+
+Podrobný záznam: [UPDATES_2026-11-04.md](UPDATES_2026-11-04.md). Starší historická dokumentace alpha.4: [CHANGELOG_V0400_ALPHA4.md](CHANGELOG_V0400_ALPHA4.md).
+
+## Původní alpha.4 kontrolní součty (archivní, NE alpha.6 R1)
+
+Zdrojový ZIP SHA-256: `2eed9062b2087951eff91c6fb040bfdb51146cdf0fe9bbb594b1e17e76501aee`
+
+Windows ZIP SHA-256: `5bcf16ba8ebf604e575df423d6be97f0138bff89f974cd3e00bef719ef910171`
+
+**Nezaměňovat tyto hashe za balíček alpha.6 R1.**
