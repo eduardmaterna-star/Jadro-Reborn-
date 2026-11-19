@@ -1,60 +1,48 @@
-# JÁDRO REBORN — QA report alpha.6 R2 review candidate
+# JÁDRO REBORN — alpha.6 R2 review candidate QA
 
-Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate derived from the user-supplied R1 source archive.
+Datum: 2026-11-19. Aplikační verze zůstává `0.4.0-alpha.6`; R2 je revize lokálního source candidate, nikoli publikované nové herní verze.
 
-## Source integrity
-- Original R1 archive: 36,818,565 bytes; SHA-256 `1f7ef0f2c4b38d2f06ad602c821ef3ccc5af8d7b13cd5e37ec07c47e303b4453`.
-- 169 original ZIP entries; CRC PASS; no duplicate, absolute or traversal paths or symlinks.
-- All 24 original asset hashes match `ASSET_SHA256.json`.
-- Historical `ZDROJE_MANIFEST_SHA256.json` has 29/89 mismatches; it is retained as history. The reviewed R2 archive has a fresh complete SHA-256/size manifest.
-- Reviewed R2 source archive: 132 entries including manifest (131 source files), CRC and every manifest hash/size PASS.
-- Unified patch applies to a clean R1 extraction and all 24 patch-managed files match the reviewed working tree byte-for-byte: PASS.
+## Opravy
+- **#16 Save/backup:** nanosekundové názvy nových záloh, kompatibilita se starými názvy, race regression test 30×.
+- **#23 SFX:** dig/buy/sell/ladder/wind, pool a cooldown, nezahajovat SFX při skryté stránce.
+- **#24 Sound Engine:** samostatné Music/SFX/Ambient volumes; hloubkový mix má nejvýše dvě sousední OGG vrstvy, neaktivní se po fade-out pozastaví, audio se pozastaví při skrytí okna a obnovuje s autoplay retry.
+- **#25 Renderer:** odstraněny dva nepotřebné výpočty z per-pixel hot path; bez FPS before/after měření netvrdíme výkonový nárůst.
+- **#19 Installer:** opraven alpha.4 → alpha.6 changelog allowlist, přidán regresní Go test.
+- **Packaging:** čistý source selection, SOURCE manifest, žádné test logy/cache/EXE ve SOURCE ZIP.
+- **CI candidate:** Windows x64, Linux x64, macOS amd64/arm64; read-only permissions; Go 1.27.4 v aktivních workflow.
 
-## Candidate fixes
-- #16: nanosecond backup names and regression test; tie-order race tests 30× PASS.
-- #23/#24: SFX hooks for dig/buy/sell/ladder/wind, small audio pool/cooldown, independent persisted Music/SFX/Ambient settings.
-- #25: removed two unused per-pixel render calculations; no FPS gain is claimed without before/after profiling.
-- #10: UI test remains in local release runner; legacy browser test selector fixed to interact with the in-world station via E.
-- #19: fixed installer allowlist mismatch (alpha.4 changelog name in alpha.6 package); added Go regression test.
-- Packaging: generated log/cache directories and EXEs excluded from SOURCE package; release SOURCE now contains its own `SOURCE_MANIFEST.json`.
+## Lokální QA — PASS
+- `python scripts/run_release_tests.py local`: **13/13 PASS**.
+- Python unittest: **18/18 PASS**.
+- Node regressions #10/#23/#24/#25: PASS.
+- Go unit, race, vet, mod verify: PASS.
+- Installer Go tests: **3/3 PASS**.
+- Chromium hybrid, alpha4 gameplay/audio smoke, backup v0.3.22/v0.3.23, review v0.3.21, metrics: PASS.
+- Visual alpha.3 browser test: PASS via Canvas2D fallback; WebGL2 GPU context unavailable.
+- Cross-platform workflow YAML parse + static tests: **5/5 PASS**.
+- Windows amd64, Linux amd64, macOS amd64/arm64 client/server cross-builds: PASS using local Go 1.23.2.
+- Source patch applies to a clean R1 extraction; all 24 changed files match byte-for-byte.
+- Installer integration against the final Windows ZIP: download, pinned SHA-256 verification, archive extraction and refusing overwrite of an existing version: PASS. Integration used the Linux installer build and a local HTTP server, not Windows runtime.
+- Release packaging: Windows ZIP 7 entries, SOURCE ZIP 130 files + manifest, COMPLETE ZIP (3 nested artifacts); CRC, manifests and `sha256sum -c dist/SHA256SUMS.txt`: PASS.
+- Headless telemetry benchmark: 24/24 samples; not a physical GPU/hardware benchmark.
 
-## Verification
-- `python scripts/run_release_tests.py local`: 12/12 PASS.
-- Python unit suite: 18/18 PASS.
-- Go unit/race tests, go vet, go mod verify: PASS.
-- Installer Go tests: 3/3 PASS.
-- Targeted Chromium hybrid, backup, review, metrics, alpha4 feature and visual test scripts: PASS. Visual test used Canvas2D fallback because WebGL2 context was unavailable.
-- Linux amd64 build and Windows amd64 / macOS amd64+arm64 Go cross-builds: PASS.
-- Windows game/server cross-build and packaging: PASS; Windows ZIP has 7 files, ZIP CRC and SHA manifest PASS.
-- Online installer: 5,614,592 bytes (under 9 MB), pinned to the Windows ZIP SHA-256.
-- Installer integration using a native Linux build, local HTTP server and actual generated Windows ZIP: PASS — hash verified, both Windows PE binaries extracted, existing installation overwrite rejected.
-- SOURCE ZIP: 129 source files plus self-describing SHA-256/size manifest; COMPLETE ZIP nested hashes and CRC PASS; root `sha256sum -c dist/SHA256SUMS.txt` PASS.
-- Headless telemetry benchmark: 24/24 samples. Median RAF FPS (overlay OFF/ON): Potato 60.0/59.2, Low 60.3/59.6, Medium 48.0/49.6, High 41.2/41.9.
-
-## Limitations / NOT RUN
-- Real Windows 11, Linux and macOS desktop GUI/runtime/audio: NOT RUN.
-- Windows installer was not executed under Windows; integration test ran Linux build of the installer against a local HTTP server.
-- WebGL2/GPU context and GPU profiling, renderer before/after FPS comparison: NOT RUN.
-- Go 1.27.4 toolchain from workflow unavailable locally; build toolchain here was Go 1.23.2.
-- Authenticode signing, signed workflow, GitHub release upload/publication: NOT RUN.
-- Multiplayer/WSS work remains outside current singleplayer scope.
-
-## Cross-platform CI candidate
-- Added `.github/workflows/cross-platform-ci.yml` with Windows x64, Linux x64, macOS amd64 and macOS arm64 build matrix; separate Linux race job.
-- Workflow has read-only `contents: read` permissions and does not publish GitHub releases.
-- YAML syntax check PASS; static workflow regression tests 5/5 PASS; full Python suite 18/18 PASS; release runner 12/12 PASS.
-- Local Go 1.23.2 cross-builds for the client and dedicated server succeeded for Windows amd64, Linux amd64, macOS amd64 and arm64. Workflow-pinned Go 1.27.4 was not installed locally.
-- GitHub Actions did not run against the full game source because the complete source tree/assets have not been imported into the repository.
-
-## Final packaged artifact hashes (local only)
-| Artifact | Size | SHA-256 |
+## Finální lokální artefakty
+| Artefakt | Velikost | SHA-256 |
 |---|---:|---|
-| Reviewed R2 source ZIP (132 entries) | 36,854,077 bytes | `895a890f7831bf79ba78505915bca1712abb9d7f04910a283b005df61f2fe337` |
-| R1→R2 patch (24 files) | 77,699 bytes | `ee00d7ab187098ea29b081b22c50cc624ba9300355a60d0fdc95f330a86cd47e` |
-| Windows ZIP | 41,819,147 bytes | `a8ad1a9bab0f3abed0b28bedcf055d6dd17cb1c3148d2cfceb4bf32ec11e58fe` |
-| SOURCE ZIP | 36,826,588 bytes | `27d84012e5de1f43f2520fb60052197baa20a38e3fd9c4f2ca259e6704b09dac` |
-| COMPLETE ZIP | 81,045,866 bytes | `63d926e737d16a16bbf3e388eb9e7252296696bc9581af944d5f3e4985cf1626` |
-| Online installer | 5,614,592 bytes | `e673cc17fb7bc8da21dae735a22b38f31c11762b17ee39e41609bfe741f40f45` |
+| Reviewed R2 source ZIP (133 entries) | 36,857,446 B | `5eb81f4d7c3acb42e51154a797475ae96a90bdd7eee4616cdea04f9e35b95134` |
+| R1→R2 patch (24 files) | 83,272 B | `f421b3216c018687b4e7ab2317bd6aa91b01f8600aaca8bdfba0267167e60cb5` |
+| Windows ZIP | 41,819,385 B | `4c1c21b34e32c2de0d5a8822b4d8e17d47f423292feab7264d4719f45ed8f950` |
+| SOURCE ZIP | 36,829,412 B | `7f21d46920bae92cf5ed80f73df700e62d022d91afb4cb5b19e0016575ab78c6` |
+| COMPLETE ZIP | 81,049,182 B | `4dc5b6df6f724a0e95c9641dc06ae196470ff66c764ee1dd3a05c1921da039fe` |
+| Online installer | 5,614,592 B | `9e873e8bb529003054aba614cfec36f1be2b145129345d26de1a328c4c36e137` |
+
+## NOT RUN / omezení
+- Windows 11, Linux, macOS desktop GUI/runtime a skutečný audio výstup: NOT RUN.
+- WebGL2/GPU profiling, renderer before/after performance: NOT RUN.
+- Go 1.27.4 nebyl lokálně dostupný; lokální builds použily Go 1.23.2.
+- Windows native installer run, Authenticode signing, public hosting and GitHub release publication: NOT RUN.
+- GitHub Actions has not run the game build matrix against a complete checked-in game source; the source tree and binary assets remain absent from `main`.
+- Separate Windows R2 EXE bundle lacks matching VCS commit provenance and includes deferred multiplayer #22; not merged into this singleplayer candidate.
 
 ## Repository status
-This report is local QA evidence, not a claim that the source ZIP has been imported. The actual game source and binary assets are still absent from GitHub `main`; this PR is documentation only. No Issue was closed, no release was published, and nothing was merged to `main`.
+PR #30 is documentation only; it does not contain the game source tree or binary media. All candidate code/CI changes remain in local archives/patch. No Issue was closed, no release was published, and no commit was merged to `main`. Multiplayer Issues #14/#15/#22 stay open as deferred backlog.
