@@ -8,7 +8,7 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 - All 24 original asset hashes match `ASSET_SHA256.json`.
 - Historical `ZDROJE_MANIFEST_SHA256.json` has 29/89 mismatches; it is retained as history. The reviewed R2 archive has a fresh complete SHA-256/size manifest.
 - Reviewed R2 source archive: 132 entries including manifest (131 source files), CRC and every manifest hash/size PASS.
-- Unified patch applies to a clean R1 extraction and all 19 patch-managed files match the reviewed working tree byte-for-byte: PASS.
+- Unified patch applies to a clean R1 extraction and all 24 patch-managed files match the reviewed working tree byte-for-byte: PASS.
 
 ## Candidate fixes
 - #16: nanosecond backup names and regression test; tie-order race tests 30× PASS.
@@ -20,7 +20,7 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 
 ## Verification
 - `python scripts/run_release_tests.py local`: 12/12 PASS.
-- Python unit suite: 13/13 PASS.
+- Python unit suite: 18/18 PASS.
 - Go unit/race tests, go vet, go mod verify: PASS.
 - Installer Go tests: 3/3 PASS.
 - Targeted Chromium hybrid, backup, review, metrics, alpha4 feature and visual test scripts: PASS. Visual test used Canvas2D fallback because WebGL2 context was unavailable.
@@ -42,18 +42,18 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 ## Cross-platform CI candidate
 - Added `.github/workflows/cross-platform-ci.yml` with Windows x64, Linux x64, macOS amd64 and macOS arm64 build matrix; separate Linux race job.
 - Workflow has read-only `contents: read` permissions and does not publish GitHub releases.
-- YAML syntax check PASS; static workflow regression tests 3/3 PASS; full Python suite 16/16 PASS; release runner 12/12 PASS.
+- YAML syntax check PASS; static workflow regression tests 5/5 PASS; full Python suite 18/18 PASS; release runner 12/12 PASS.
 - Local Go 1.23.2 cross-builds for the client and dedicated server succeeded for Windows amd64, Linux amd64, macOS amd64 and arm64. Workflow-pinned Go 1.27.4 was not installed locally.
 - GitHub Actions did not run against the full game source because the complete source tree/assets have not been imported into the repository.
 
 ## Final packaged artifact hashes (local only)
 | Artifact | Size | SHA-256 |
 |---|---:|---|
-| Reviewed R2 source ZIP (132 entries) | 36,852,994 bytes | `e1a69dac330cc0a2341607153e9163a81e3e8ca15065457485980dfab5b53f11` |
-| R1→R2 patch (19 files) | 72,813 bytes | `576e6a92d573c7343f6dc8703c2b997054a7b29752c796cd82818f09ee25ccec` |
+| Reviewed R2 source ZIP (132 entries) | 36,854,077 bytes | `895a890f7831bf79ba78505915bca1712abb9d7f04910a283b005df61f2fe337` |
+| R1→R2 patch (24 files) | 72,813 bytes | `576e6a92d573c7343f6dc8703c2b997054a7b29752c796cd82818f09ee25ccec` |
 | Windows ZIP | 41,819,147 bytes | `a8ad1a9bab0f3abed0b28bedcf055d6dd17cb1c3148d2cfceb4bf32ec11e58fe` |
-| SOURCE ZIP | 36,826,738 bytes | `a1b92e2bc7f03fd9dfecd0139572d10b4a227365a3985931ed9f85b019d084e6` |
-| COMPLETE ZIP | 81,045,999 bytes | `2486f65a88573e61fbc7cbc4c76f125597d7f3f15150f04d5c148dc704b35fd4` |
+| SOURCE ZIP | 36,826,588 bytes | `27d84012e5de1f43f2520fb60052197baa20a38e3fd9c4f2ca259e6704b09dac` |
+| COMPLETE ZIP | 81,045,866 bytes | `63d926e737d16a16bbf3e388eb9e7252296696bc9581af944d5f3e4985cf1626` |
 | Online installer | 5,614,592 bytes | `e673cc17fb7bc8da21dae735a22b38f31c11762b17ee39e41609bfe741f40f45` |
 
 ## Repository status
