@@ -1,0 +1,32 @@
+name: Validate release version parser
+
+on:
+  push:
+    branches: [fix/release-prerelease-version-validation]
+    paths:
+      - 'scripts/release_version.py'
+      - 'tests/test_release_version_tag.py'
+      - '.github/workflows/validate-release-version.yml'
+  pull_request:
+    paths:
+      - 'scripts/release_version.py'
+      - 'tests/test_release_version_tag.py'
+      - '.github/workflows/validate-release-version.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-version-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile release script and tests
+        run: |
+          python -m py_compile scripts/release_version.py tests/test_release_version_tag.py
+      - name: Run release version regression tests
+        run: python -m unittest discover -s tests -p 'test_release_version_tag.py' -v
