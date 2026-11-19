@@ -1,28 +1,29 @@
-# Alpha.6 R2 source and release artifact handoff
+# Alpha.6 R2 artifact handoff — local outputs only
 
-Audit date: 2026-11-19. These are generated local artifacts; they are not GitHub release assets.
+Audit date: 2026-11-19. These files are created locally and are **not GitHub Release assets**.
 
 | Artifact | Size | SHA-256 |
 |---|---:|---|
-| Reviewed R2 source archive (132 ZIP entries: 131 files + manifest) | 36,854,077 bytes | `895a890f7831bf79ba78505915bca1712abb9d7f04910a283b005df61f2fe337` |
-| R1 → R2 unified source patch (24 files) | 77,699 bytes | `ee00d7ab187098ea29b081b22c50cc624ba9300355a60d0fdc95f330a86cd47e` |
-| Packaged Windows x64 distribution (7 entries) | 41,819,147 bytes | `a8ad1a9bab0f3abed0b28bedcf055d6dd17cb1c3148d2cfceb4bf32ec11e58fe` |
-| Packaged SOURCE ZIP (129 source files + SOURCE_MANIFEST.json) | 36,826,588 bytes | `27d84012e5de1f43f2520fb60052197baa20a38e3fd9c4f2ca259e6704b09dac` |
-| COMPLETE ZIP (Windows + SOURCE + installer) | 81,045,866 bytes | `63d926e737d16a16bbf3e388eb9e7252296696bc9581af944d5f3e4985cf1626` |
-| Windows online installer | 5,614,592 bytes | `e673cc17fb7bc8da21dae735a22b38f31c11762b17ee39e41609bfe741f40f45` |
+| Reviewed R2 source ZIP (133 entries: 132 files + manifest) | 36,857,446 bytes | `5eb81f4d7c3acb42e51154a797475ae96a90bdd7eee4616cdea04f9e35b95134` |
+| R1 → R2 source patch (24 changed source/test files) | 83,272 bytes | `f421b3216c018687b4e7ab2317bd6aa91b01f8600aaca8bdfba0267167e60cb5` |
+| Windows x64 package ZIP (7 files) | 41,819,385 bytes | `4c1c21b34e32c2de0d5a8822b4d8e17d47f423292feab7264d4719f45ed8f950` |
+| SOURCE ZIP (130 source files + SOURCE_MANIFEST.json; 131 entries) | 36,829,412 bytes | `7f21d46920bae92cf5ed80f73df700e62d022d91afb4cb5b19e0016575ab78c6` |
+| COMPLETE ZIP (Windows ZIP + SOURCE ZIP + installer) | 81,049,182 bytes | `4dc5b6df6f724a0e95c9641dc06ae196470ff66c764ee1dd3a05c1921da039fe` |
+| Online installer | 5,614,592 bytes | `9e873e8bb529003054aba614cfec36f1be2b145129345d26de1a328c4c36e137` |
+| Release SHA256SUMS file | 473 bytes | `acb6998e90d0494cb185ce32c3013225b6804bd4660bd99c02795db96757edad` |
 
-## Local verification
-- Local release runner: 12/12 steps PASS.
-- Python test suite: 18/18 PASS; cross-platform workflow tests 5/5 PASS.
-- `.github/workflows/cross-platform-ci.yml` YAML parse PASS. Matrix: Windows x64, Linux x64, macOS Intel (amd64), macOS Apple Silicon (arm64); Go client/server builds, Python/Node/Go tests, Linux race job. Permissions are `contents: read`; no release publishing.
-- Local Go 1.23.2 cross-builds of client and server: Windows amd64, Linux amd64, macOS amd64 and arm64 PASS.
-- Patch applies to a clean R1 extraction and all 24 changed files match the review tree byte-for-byte.
-- SOURCE manifest, nested archive hashes and CRC, and `sha256sum -c dist/SHA256SUMS.txt`: PASS.
+## Verification
+- Reviewed source ZIP CRC, duplicate/path safety and all 132 manifest SHA-256/size entries: PASS.
+- R1→R2 patch dry-run against clean original archive and byte-for-byte compare of all 24 changed paths: PASS.
+- Release SOURCE ZIP 130-file manifest, nested archive SHA-256 and CRC: PASS.
+- COMPLETE ZIP nested Windows/SOURCE/installer hashes and CRC: PASS.
+- Root `sha256sum -c dist/SHA256SUMS.txt`: 4/4 PASS.
+- Windows ZIP contains client/server EXE, README, recovery notes, release report, changelog and RELEASE_SHA256 manifest; CRC + inner SHA-256 PASS.
+- Installer embeds exact Windows ZIP SHA-256; Go tests 3/3 and Linux-hosted HTTP integration (download, hash, extraction, overwrite refusal) PASS.
 
-## Important limitations
-- Build artifacts were created locally with Go 1.23.2, not Go 1.27.4 pinned in workflows.
-- The cross-platform workflow was syntax-checked and unit-tested locally but has not run on GitHub against the game source. `main` still lacks the complete source tree and binary assets.
-- Actual Windows 11/Linux/macOS GUI/runtime/audio testing, GPU profiling, Authenticode signing and release publication remain NOT RUN.
-- The installer was integration-tested as a Linux build against a local HTTP endpoint and actual Windows ZIP; this is not a Windows runtime test.
-- No release has been uploaded or published. The complete source + media still need to be imported into GitHub before Actions can validate the real game commit.
-- Separate Windows R2 package includes multiplayer issue #22 and cannot be tied to this source commit; its multiplayer content was deliberately not mixed into the singleplayer candidate.
+## Build/toolchain limitations
+- Locally executed Go toolchain is 1.23.2. Current workflows pin Go 1.27.4, which could not be installed in this environment.
+- Cross-builds: Windows amd64, Linux amd64, macOS amd64 and arm64 PASS with Go 1.23.2.
+- Actual Windows/Linux/macOS runtime UI/audio, GPU profiling, Authenticode and release hosting are NOT RUN.
+- No public release is created. Full source import to GitHub remains blocked because available GitHub actions can write UTF-8 text but do not accept local binary source/media archive uploads.
+- The separate supplied Windows R2 EXE package is not part of this singleplayer source candidate: it has no matching VCS commit identity and includes multiplayer issue #22.
