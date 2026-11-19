@@ -4,12 +4,12 @@ Audit date: 2026-11-19. These files are created locally and are **not GitHub Rel
 
 | Artifact | Size | SHA-256 |
 |---|---:|---|
-| Reviewed R2 source ZIP (133 entries: 132 files + manifest) | 36,857,446 bytes | `5eb81f4d7c3acb42e51154a797475ae96a90bdd7eee4616cdea04f9e35b95134` |
-| R1 → R2 source patch (24 changed source/test files) | 83,272 bytes | `f421b3216c018687b4e7ab2317bd6aa91b01f8600aaca8bdfba0267167e60cb5` |
-| Windows x64 package ZIP (7 files) | 41,819,385 bytes | `4c1c21b34e32c2de0d5a8822b4d8e17d47f423292feab7264d4719f45ed8f950` |
-| SOURCE ZIP (130 source files + SOURCE_MANIFEST.json; 131 entries) | 36,829,412 bytes | `7f21d46920bae92cf5ed80f73df700e62d022d91afb4cb5b19e0016575ab78c6` |
-| COMPLETE ZIP (Windows ZIP + SOURCE ZIP + installer) | 81,049,182 bytes | `4dc5b6df6f724a0e95c9641dc06ae196470ff66c764ee1dd3a05c1921da039fe` |
-| Online installer | 5,614,592 bytes | `9e873e8bb529003054aba614cfec36f1be2b145129345d26de1a328c4c36e137` |
+| Reviewed R2 source ZIP (133 entries: 132 files + manifest) | 36,858,109 bytes | `297a6596e7051e8467019795f500e69eff97695ca1062e33c60e4990eae436f8` |
+| R1 → R2 source patch (24 changed source/test files) | 84,685 bytes | `88e3832f4755ac1f2d653387cb4acc18f79609804d53424be6ec15304af9f1ec` |
+| Windows x64 package ZIP (7 files) | 41,819,473 bytes | `726bd551c052c6ba885bf1650bc820d7cec21cb5c96e6466dc31d067552d8d73` |
+| SOURCE ZIP (130 source files + SOURCE_MANIFEST.json; 131 entries) | 36,829,720 bytes | `b58929332982865cde50e1b1238d835911f58012ac51d7d3b39089516e5c8439` |
+| COMPLETE ZIP (Windows ZIP + SOURCE ZIP + installer) | 81,049,441 bytes | `ea95b9dfd70fffbab8a6c59faf128b36dee2c71d96cbd35f3c0dcc5217133fa4` |
+| Online installer | 5,614,592 bytes | `5bb6100944c08a5402c5ab22f487055c38fcf02989761745ec9bd2ca6c12a754` |
 | Release SHA256SUMS file | 473 bytes | `acb6998e90d0494cb185ce32c3013225b6804bd4660bd99c02795db96757edad` |
 
 ## Verification
