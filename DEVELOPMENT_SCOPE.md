@@ -6,35 +6,39 @@ Zdroj rozhodnutí: vyplněný uživatelský dotazník.
 ## Produktový rozsah
 
 - Primární režim dalšího vývoje: **singleplayer**.
-- Multiplayer se v této etapě aktivně nerozšiřuje. Existující multiplayerové Issues se nemažou ani automaticky nezavírají; zůstávají jako odložený backlog, dokud nebude rozhodnuto o návratu multiplayeru.
+- Multiplayer se v této etapě aktivně nerozšiřuje. Existující multiplayerové Issues se nemažou ani automaticky nezavírají; zůstávají jako odložený backlog.
 - Cílové platformy: **Windows 11, Linux a macOS**.
-- Požadované oblasti práce: opravy všech otevřených Issues, nové funkce, code review, QA a optimalizace výkonu.
-- Vydání nové verze po každém větším, ověřeném balíku oprav.
-- Změny se připravují automaticky ve větvích a Pull Requestech. Bez samostatného schválení se nic neslučuje do `main`.
+- Požadované oblasti práce: opravy otevřených Issues, nové funkce, code review, QA a optimalizace výkonu.
+- Nová verze po každém větším, ověřeném balíku oprav.
+- Změny se připravují ve větvích a Pull Requestech. Bez samostatného schválení se nic neslučuje do `main`.
 
 ## Pravidla kvality
 
-1. Každá oprava musí být skutečně implementována ve zdrojovém kódu, ne pouze popsána v dokumentaci.
-2. Každý PR musí uvádět testy jako PASS / FAIL / NOT RUN a přesný commit.
-3. Neuzavírat Issue bez odpovídající implementace a ověřovacích důkazů.
-4. Zachovat existující uložené expedice, ekonomiku, inventář, obchod, těžbu a další funkce, pokud se konkrétní oprava netýká jejich změny.
-5. Release nevydávat, pokud chybí potřebné zdroje, assety, testy nebo reprodukovatelný build.
-6. Podpora Linuxu a macOS je cílový požadavek; nesmí být označena za ověřenou, dokud pro ni neproběhnou reálné buildy a testy.
+1. Oprava musí být implementována ve zdrojovém kódu, ne pouze popsána v dokumentaci.
+2. Každý PR uvádí testy jako PASS / FAIL / NOT RUN a přesný commit.
+3. Issue se nezavírá bez implementace a odpovídajících ověřovacích důkazů.
+4. Zachovat uložené expedice, ekonomiku, inventář, obchod a těžbu, pokud se změna netýká jejich chování.
+5. Release nevydávat bez zdrojů, assetů, testů a reprodukovatelného buildu.
+6. Windows 11, Linux a macOS jsou cílové platformy; podpora není ověřená, dokud neproběhnou runtime testy na daném OS.
 
-## Stav verze — nutné rozlišení
+## Potvrzená zdrojová verze
 
-Repozitář `CURRENT_RELEASE.md` uvádí jako nejnovější verzi doloženou historií Coding/Code Review `v0.4.0-alpha.6 R1`. Nahraný soubor `Coding.txt` uvádí `v0.3.15`, zatímco `Návrh hry do středu Země.txt` popisuje `v0.3.13`. Tyto záznamy si odporují a žádný z nich sám o sobě nedokládá aktuální spustitelný build na GitHubu. Verze proto zůstává **neověřená** do importu kompletního zdrojového balíčku a kontroly manifestu.
+Uživatel dodal archiv `JADRO_REBORN_V0400_ALPHA6_R1_SOURCE.zip`. V jeho `launcher/main.go`, `ALPHA6_REVISION1_FIX.md` a README je doložena aplikace **v0.4.0-alpha.6**, revize zdrojového archivu **R1**. Starší `Coding.txt` (v0.3.15) a původní návrh (v0.3.13) jsou historické podklady, nikoli aktuální zdrojový build.
 
-## Aktuální technický blokátor
+Původní upload SHA-256:
+`1f7ef0f2c4b38d2f06ad602c821ef3ccc5af8d7b13cd5e37ec07c47e303b4453`
 
-Na `main` je dostupný `launcher/go.mod`, ale chybí `launcher/main.go` a `launcher/web/game.js`; bez nich nelze sestavit hru ani bezpečně implementovat a regresně ověřit většinu herních Issues. Tento PR je pouze záznamem potvrzeného rozsahu práce, nikoli opravou herního kódu.
+## Stav zdrojů a GitHubu
+
+Zdrojový archiv byl lokálně ověřen: 169 původních položek, ZIP CRC PASS, 24 asset hashů PASS. Lokálně byly připraveny opravy záloh, zvuků a renderer hot-path; kompletní lokální sada po těchto změnách prošla. Revidovaný zdrojový ZIP a QA report jsou připravené jako samostatné výstupy.
+
+**GitHub `main` stále nemá kompletní zdrojový strom.** Archiv zatím není importován do repozitáře, proto se lokální opravy nepovažují za GitHub implementaci a Issues zůstávají otevřené. PR #29 zaznamenává pouze potvrzený rozsah práce.
 
 ## Další pořadí práce
 
-1. Získat a importovat kompletní zdrojový archiv včetně assetů, testů a build skriptů.
+1. Importovat revidovaný zdrojový archiv do GitHubu bez ztráty assetů a historie.
 2. Potvrdit přesnou verzi pomocí manifestu, Git commitu a SHA-256.
-3. Provést audit zdrojů a reprodukovatelné buildy.
-4. Opravit singleplayerové UI, ukládání, grafiku, zvuk, výkon a instalaci podle otevřených Issues.
-5. Doplnit CI/build matrix pro Windows 11, Linux a macOS.
+3. Spustit CI a reprodukovatelné buildy.
+4. Dokončit singleplayerové UI, ukládání, grafiku, zvuk, výkon a instalaci podle Issues.
+5. Ověřit Windows 11, Linux a macOS včetně runtime/audio/GUI.
 6. Připravit release až po úspěšném ověření cílových platforem.
-
