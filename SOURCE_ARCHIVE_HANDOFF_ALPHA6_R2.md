@@ -20,7 +20,7 @@ Audit date: 2026-11-19. These are generated local artifacts; they are not GitHub
 - SOURCE manifest, nested archive hashes and CRC, and `sha256sum -c dist/SHA256SUMS.txt`: PASS.
 
 ## Important limitations
-- Build artifacts were created locally with Go 1.23.2, not Go 1.27.3 pinned in workflows.
+- Build artifacts were created locally with Go 1.23.2, not Go 1.27.4 pinned in workflows.
 - The cross-platform workflow was syntax-checked and unit-tested locally but has not run on GitHub against the game source. `main` still lacks the complete source tree and binary assets.
 - Actual Windows 11/Linux/macOS GUI/runtime/audio testing, GPU profiling, Authenticode signing and release publication remain NOT RUN.
 - The installer was integration-tested as a Linux build against a local HTTP endpoint and actual Windows ZIP; this is not a Windows runtime test.
