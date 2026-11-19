@@ -10,7 +10,7 @@ Audit date: 2026-11-19. These files are created locally and are **not GitHub Rel
 | SOURCE ZIP (130 source files + SOURCE_MANIFEST.json; 131 entries) | 36,829,720 bytes | `b58929332982865cde50e1b1238d835911f58012ac51d7d3b39089516e5c8439` |
 | COMPLETE ZIP (Windows ZIP + SOURCE ZIP + installer) | 81,049,441 bytes | `ea95b9dfd70fffbab8a6c59faf128b36dee2c71d96cbd35f3c0dcc5217133fa4` |
 | Online installer | 5,614,592 bytes | `5bb6100944c08a5402c5ab22f487055c38fcf02989761745ec9bd2ca6c12a754` |
-| Release SHA256SUMS file | 473 bytes | `acb6998e90d0494cb185ce32c3013225b6804bd4660bd99c02795db96757edad` |
+| Release SHA256SUMS file | 473 bytes | `b9e803279e38a386dc74e97f1d033c2e1961750c05286d7b03a78eaed32663e6` |
 
 ## Verification
 - Reviewed source ZIP CRC, duplicate/path safety and all 132 manifest SHA-256/size entries: PASS.
