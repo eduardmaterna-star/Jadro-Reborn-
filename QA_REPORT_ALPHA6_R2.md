@@ -50,7 +50,7 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 | Artifact | Size | SHA-256 |
 |---|---:|---|
 | Reviewed R2 source ZIP (132 entries) | 36,854,077 bytes | `895a890f7831bf79ba78505915bca1712abb9d7f04910a283b005df61f2fe337` |
-| R1→R2 patch (24 files) | 72,813 bytes | `576e6a92d573c7343f6dc8703c2b997054a7b29752c796cd82818f09ee25ccec` |
+| R1→R2 patch (24 files) | 77,699 bytes | `ee00d7ab187098ea29b081b22c50cc624ba9300355a60d0fdc95f330a86cd47e` |
 | Windows ZIP | 41,819,147 bytes | `a8ad1a9bab0f3abed0b28bedcf055d6dd17cb1c3148d2cfceb4bf32ec11e58fe` |
 | SOURCE ZIP | 36,826,588 bytes | `27d84012e5de1f43f2520fb60052197baa20a38e3fd9c4f2ca259e6704b09dac` |
 | COMPLETE ZIP | 81,045,866 bytes | `63d926e737d16a16bbf3e388eb9e7252296696bc9581af944d5f3e4985cf1626` |
