@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('node:fs');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+const source=fs.readFileSync(path.join(__dirname,'..','launcher','web','game.js'),'utf8');
+const begin=source.indexOf('function renderChunk(cx,cy){');
+const end=source.indexOf('\nfunction ',begin+1);
+assert.ok(begin>0&&end>begin,'renderChunk function not found');
+const renderer=source.slice(begin,end);
+assert.ok(!renderer.includes('smoothNoise(wx,wy,160)'),'unused noise removed');
+assert.ok(!renderer.includes('const r=ratio(wy)'),'unused ratio removed');
+console.log('PASS Issue #25 renderChunk unused calculations removed');
