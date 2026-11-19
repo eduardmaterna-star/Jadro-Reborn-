@@ -35,7 +35,7 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 - Real Windows 11, Linux and macOS desktop GUI/runtime/audio: NOT RUN.
 - Windows installer was not executed under Windows; integration test ran Linux build of the installer against a local HTTP server.
 - WebGL2/GPU context and GPU profiling, renderer before/after FPS comparison: NOT RUN.
-- Go 1.27.3 toolchain from workflow unavailable locally; build toolchain here was Go 1.23.2.
+- Go 1.27.4 toolchain from workflow unavailable locally; build toolchain here was Go 1.23.2.
 - Authenticode signing, signed workflow, GitHub release upload/publication: NOT RUN.
 - Multiplayer/WSS work remains outside current singleplayer scope.
 
@@ -43,7 +43,7 @@ Datum: 2026-11-19. Aplikační verze: 0.4.0-alpha.6. Singleplayer candidate deri
 - Added `.github/workflows/cross-platform-ci.yml` with Windows x64, Linux x64, macOS amd64 and macOS arm64 build matrix; separate Linux race job.
 - Workflow has read-only `contents: read` permissions and does not publish GitHub releases.
 - YAML syntax check PASS; static workflow regression tests 3/3 PASS; full Python suite 16/16 PASS; release runner 12/12 PASS.
-- Local Go 1.23.2 cross-builds for the client and dedicated server succeeded for Windows amd64, Linux amd64, macOS amd64 and arm64. Workflow-pinned Go 1.27.3 was not installed locally.
+- Local Go 1.23.2 cross-builds for the client and dedicated server succeeded for Windows amd64, Linux amd64, macOS amd64 and arm64. Workflow-pinned Go 1.27.4 was not installed locally.
 - GitHub Actions did not run against the full game source because the complete source tree/assets have not been imported into the repository.
 
 ## Final packaged artifact hashes (local only)
