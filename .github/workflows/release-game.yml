@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Verze X.Y.Z (ruční test nevytvoří GitHub Release)'
+        description: 'Verze X.Y.Z nebo X.Y.Z-alpha.N (ruční test nevytvoří GitHub Release)'
         required: true
-        default: '0.3.18'
+        default: '0.4.0-alpha.4'
 
 permissions:
   contents: write
@@ -33,11 +33,16 @@ jobs:
       - name: Determine release version
         id: version
         shell: pwsh
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          $raw = "${{ inputs.version }}"
-          if ("${{ github.event_name }}" -eq "push") { $raw = "${{ github.ref_name }}" }
+          $raw = $env:INPUT_VERSION
+          if ($env:EVENT_NAME -eq 'push') { $raw = $env:REF_NAME }
           $v = $raw -replace '^v',''
-          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid release version: $raw" }
+          python scripts/release_version.py --check-version "$v"
+          if ($LASTEXITCODE -ne 0) { throw "Invalid release version: $raw" }
           "version=$v" >> $env:GITHUB_OUTPUT
 
       - name: Check required sources
@@ -95,4 +100,6 @@ jobs:
           GAME_VERSION: ${{ steps.version.outputs.version }}
         run: |
           $tag = "${{ github.ref_name }}"
-          gh release create $tag "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip" "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip" "dist/SHA256SUMS.txt" --title "JÁDRO REBORN $tag" --generate-notes
+          $extraArgs = @()
+          if ($env:GAME_VERSION.Contains('-')) { $extraArgs += '--prerelease' }
+          gh release create $tag "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_WINDOWS.zip" "dist/JADRO_REBORN_v${{ steps.version.outputs.version }}_SOURCE.zip" "dist/SHA256SUMS.txt" --title "JÁDRO REBORN $tag" --generate-notes @extraArgs
