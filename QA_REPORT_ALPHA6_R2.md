@@ -47,3 +47,17 @@ Datum: 2026-11-19. Aplikační verze zůstává `0.4.0-alpha.6`; R2 je revize lo
 
 ## Repository status
 PR #30 is documentation only; it does not contain the game source tree or binary media. All candidate code/CI changes remain in local archives/patch. No Issue was closed, no release was published, and no commit was merged to `main`. Multiplayer Issues #14/#15/#22 stay open as deferred backlog.
+
+## Nezávislé opakované ověření v tomto pokračování — 2026-11-20
+
+Reviewed source ZIP se znovu ověřil proti manifestu: **132/132 souborů PASS**, ZIP CRC PASS, bez chybějících či nepřiřazených položek. SHA-256 archivu zůstal `297a6596e7051e8467019795f500e69eff97695ca1062e33c60e4990eae436f8`.
+
+Znovu spuštěno přímo z extrahovaného R2 stromu:
+- `python scripts/run_release_tests.py local`: **13/13 PASS**, včetně Go unit, vet a race.
+- `go mod verify`: PASS.
+- Installer Go tests: PASS.
+- `tests/test_visual_alpha3_browser.py`: PASS přes Canvas2D fallback; WebGL2 GPU context NOT RUN.
+- `tests/test_alpha4_browser.py`: PASS.
+- Při pokusu o agregovaný `browser` suite se běh prostředí ukončil timeoutem po úspěšném dokončení prvních sedmi kroků (Linux build, native integration, hybrid, review, backup v0.3.22/v0.3.23 a metrics). Celý browser suite proto není označen jako PASS; následující multiplayer mock testy nebyly dokončeny a zůstávají mimo potvrzený singleplayer rozsah.
+
+Toto opakované ověření proběhlo nad lokálním ZIPem, nikoli nad GitHub commitem. Nezměnilo stav importu, platformního runtime ani release akceptace.
